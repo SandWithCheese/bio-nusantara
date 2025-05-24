@@ -60,7 +60,7 @@ def download_gbif_data():
 
         if all_results:
             df = pd.DataFrame(all_results)
-            filename = f"../data/gbif_{taxon_name.lower()}_indonesia.csv"
+            filename = f"../data/raw/gbif_{taxon_name.lower()}_indonesia.csv"
             df.to_csv(filename, index=False)
             print(f"Saved {len(df)} total records to {filename}")
         else:
