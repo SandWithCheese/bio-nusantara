@@ -1,0 +1,332 @@
+[
+    {
+        "name": "Taman Nasional Bali Barat",
+        "latitude": -8.1333,
+        "longitude": 114.4833,
+        "size": 190
+    },
+    {
+        "name": "Taman Nasional Gunung Rinjani",
+        "latitude": -8.40806,
+        "longitude": 116.44944,
+        "size": 413.3
+    },
+    {
+        "name": "Taman Nasional Kelimutu",
+        "latitude": -8.7667,
+        "longitude": 121.8,
+        "size": 50
+    },
+    {
+        "name": "Taman Nasional Komodo",
+        "latitude": -8.5433,
+        "longitude": 119.4894,
+        "size": 1733
+    },
+    {
+        "name": "Taman Nasional Laiwangi Wanggameti",
+        "latitude": -10.1,
+        "longitude": 120.1667,
+        "size": 470.1
+    },
+    {
+        "name": "Taman Nasional Manupeu Tanah Daru",
+        "latitude": -9.7333,
+        "longitude": 119.7,
+        "size": 879.8
+    },
+    {
+        "name": "Taman Nasional Tambora",
+        "latitude": -8.2667,
+        "longitude": 117.9667,
+        "size": 716.45
+    },
+    {
+        "name": "Taman Nasional Moyo Satonda",
+        "latitude": -8.105166515227555,
+        "longitude": 117.74381833861845,
+        "size": 312.0015
+    },
+    {
+        "name": "Taman Nasional Alas Purwo",
+        "latitude": -8.6833,
+        "longitude": 114.4667,
+        "size": 434.2
+    },
+    {
+        "name": "Taman Nasional Baluran",
+        "latitude": -7.8333,
+        "longitude": 114.3667,
+        "size": 250
+    },
+    {
+        "name": "Taman Nasional Bromo Tengger Semeru",
+        "latitude": -7.925,
+        "longitude": 112.95,
+        "size": 502.764
+    },
+    {
+        "name": "Taman Nasional Gunung Ciremai",
+        "latitude": -6.907167,
+        "longitude": 108.415722,
+        "size": 148.413
+    },
+    {
+        "name": "Taman Nasional Gunung Gede Pangrango",
+        "latitude": -6.7667,
+        "longitude": 106.9333,
+        "size": 242.708
+    },
+    {
+        "name": "Taman Nasional Gunung Halimun Salak",
+        "latitude": -6.8,
+        "longitude": 106.4833,
+        "size": 1133.57
+    },
+    {
+        "name": "Taman Nasional Gunung Merapi",
+        "latitude": -7.5469,
+        "longitude": 110.4444,
+        "size": 64.1
+    },
+    {
+        "name": "Taman Nasional Gunung Merbabu",
+        "latitude": -7.5,
+        "longitude": 110.4,
+        "size": 57.25
+    },
+    {
+        "name": "Taman Nasional Karimunjawa",
+        "latitude": -5.8167,
+        "longitude": 110.4,
+        "size": 1101.17
+    },
+    {
+        "name": "Taman Nasional Kepulauan Seribu",
+        "latitude": -5.7456,
+        "longitude": 106.6153,
+        "size": 1074.89
+    },
+    {
+        "name": "Taman Nasional Meru Betiri",
+        "latitude": -8.45,
+        "longitude": 113.775,
+        "size": 580
+    },
+    {
+        "name": "Taman Nasional Ujung Kulon",
+        "latitude": -6.7467,
+        "longitude": 105.3336,
+        "size": 1229.56
+    },
+    {
+        "name": "Taman Nasional Betung Kerihun",
+        "latitude": 1.2208,
+        "longitude": 113.353,
+        "size": 8000
+    },
+    {
+        "name": "Taman Nasional Bukit Baka Bukit Raya",
+        "latitude": -0.7256,
+        "longitude": 112.5858,
+        "size": 2346.243
+    },
+    {
+        "name": "Taman Nasional Danau Sentarum",
+        "latitude": 0.85,
+        "longitude": 112.1,
+        "size": 1320
+    },
+    {
+        "name": "Taman Nasional Gunung Palung",
+        "latitude": -1.24,
+        "longitude": 110.23917,
+        "size": 1080.439
+    },
+    {
+        "name": "Taman Nasional Kayan Mentarang",
+        "latitude": 2.1333,
+        "longitude": 115.4,
+        "size": 1271
+    },
+    {
+        "name": "Taman Nasional Kutai",
+        "latitude": 0.35,
+        "longitude": 117.2667,
+        "size": 1986.29
+    },
+    {
+        "name": "Taman Nasional Sebangau",
+        "latitude": -2.5833,
+        "longitude": 113.6667,
+        "size": 5687
+    },
+    {
+        "name": "Taman Nasional Tanjung Puting",
+        "latitude": -2.9353,
+        "longitude": 112.0403,
+        "size": 3550
+    },
+    {
+        "name": "Taman Nasional Aketajawe-Lolobata",
+        "latitude": 0.5878,
+        "longitude": 127.751,
+        "size": 1673
+    },
+    {
+        "name": "Taman Nasional Lorentz",
+        "latitude": -4.6297,
+        "longitude": 137.9727,
+        "size": 25056
+    },
+    {
+        "name": "Taman Nasional Manusela",
+        "latitude": -3.05,
+        "longitude": 129.4333,
+        "size": 1745.4559
+    },
+    {
+        "name": "Taman Nasional Teluk Cenderawasih",
+        "latitude": -2.5,
+        "longitude": 134.6333,
+        "size": 14535
+    },
+    {
+        "name": "Taman Nasional Wasur",
+        "latitude": -8.6,
+        "longitude": 140.8333,
+        "size": 4138
+    },
+    {
+        "name": "Taman Nasional Bantimurung Bulusaraung",
+        "latitude": -4.9,
+        "longitude": 119.75,
+        "size": 437.50
+    },
+    {
+        "name": "Taman Nasional Bogani Nani Wartabone",
+        "latitude": 0.5606,
+        "longitude": 123.68,
+        "size": 2871.15
+    },
+    {
+        "name": "Taman Nasional Bunaken",
+        "latitude": 1.6667,
+        "longitude": 124.65,
+        "size": 890
+    },
+    {
+        "name": "Taman Nasional Kepulauan Togean",
+        "latitude": -0.35,
+        "longitude": 121.9833,
+        "size": 3626
+    },
+    {
+        "name": "Taman Nasional Lore Lindu",
+        "latitude": -1.5167,
+        "longitude": 120.1833,
+        "size": 2180
+    },
+    {
+        "name": "Taman Nasional Rawa Aopa Watumohai",
+        "latitude": -4.3833,
+        "longitude": 121.9833,
+        "size": 1050
+    },
+    {
+        "name": "Taman Nasional Taka Bonerate",
+        "latitude": -6.6833,
+        "longitude": 121.15,
+        "size": 5307
+    },
+    {
+        "name": "Taman Nasional Wakatobi",
+        "latitude": -5.6833,
+        "longitude": 124.0,
+        "size": 13900
+    },
+    {
+        "name": "Taman Nasional Gandang Dewata",
+        "latitude": -2.9495,
+        "longitude": 119.4509,
+        "size": 0.79342
+    },
+    {
+        "name": "Taman Nasional Batang Gadis",
+        "latitude": 0.8667,
+        "longitude": 99.3167,
+        "size": 728.0375
+    },
+    {
+        "name": "Taman Nasional Bukit Duabelas",
+        "latitude": -1.85,
+        "longitude": 102.65,
+        "size": 547.8
+    },
+    {
+        "name": "Taman Nasional Bukit Tigapuluh",
+        "latitude": -1.0,
+        "longitude": 102.5,
+        "size": 1431.43
+    },
+    {
+        "name": "Taman Nasional Kerinci Seblat",
+        "latitude": -2.0581,
+        "longitude": 101.3898,
+        "size": 13895.09
+    },
+    {
+        "name": "Taman Nasional Berbak",
+        "latitude": -1.4167,
+        "longitude": 104.2167,
+        "size": 1412.61
+    },
+    {
+        "name": "Taman Nasional Bukit Barisan Selatan",
+        "latitude": -5.3333,
+        "longitude": 104.2167,
+        "size": 3555.11
+    },
+    {
+        "name": "Taman Nasional Way Kambas",
+        "latitude": -4.9167,
+        "longitude": 105.75,
+        "size": 1300
+    },
+    {
+        "name": "Taman Nasional Gunung Leuser",
+        "latitude": 3.7727,
+        "longitude": 97.2454,
+        "size": 8302.36
+    },
+    {
+        "name": "Taman Nasional Siberut",
+        "latitude": -1.317344399001858,
+        "longitude": 98.8891946865052,
+        "size": 1905
+    },
+    {
+        "name": "Taman Nasional Tesso Nilo",
+        "latitude": -0.0755812725775972,
+        "longitude": 101.62306722883507,
+        "size": 5687
+    },
+    {
+        "name": "Taman Nasional Sembilang",
+        "latitude": -1.95,
+        "longitude": 104.5667,
+        "size": 2051
+    },
+    {
+        "name": "Taman Nasional Zamrud",
+        "latitude": 0.0,
+        "longitude": 102.4,
+        "size": 1200
+    },
+    {
+        "name": "Taman Nasional Gunung Maras",
+        "latitude": -1.8529377804248106,
+        "longitude": 105.83415687909131,
+        "size": 16806.91
+    }
+]
