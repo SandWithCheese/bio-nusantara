@@ -5,8 +5,8 @@ from shapely.geometry import LineString
 import pandas as pd
 import re 
 import os
-import json # Untuk memuat data taman nasional
-import math # Untuk menghitung akar kuadrat dan pi
+import json 
+import math 
 
 class BiogeographicAnalyzer:
     def __init__(self):
@@ -14,18 +14,44 @@ class BiogeographicAnalyzer:
         self.weber_line = None
         self.map = None
 
+    def _standardize_species_name_for_phylo_file(self, original_name):
+        """
+        Membersihkan dan menstandarisasi nama spesies menjadi format Genus_spesies.
+        Logika ini HARUS SAMA dengan standardize_species_name_for_id di phylogenetic_analysis.py
+        """
+        if pd.isna(original_name) or not str(original_name).strip():
+            return "unknown_species_id" 
+
+        name = str(original_name)
+        name = re.sub(r'\s*\(.*\)\s*', '', name).strip()
+        name = re.sub(r'[, ]*\b\d{4}\b$', '', name).strip()
+        name = re.sub(r'\s*\b(spp?|cf|aff)\.?\b.*', '', name, flags=re.IGNORECASE).strip()
+        name = re.sub(r'[^a-zA-Z0-9\s]+$', '', name).strip()
+        
+        name_parts = name.split()
+        
+        if len(name_parts) >= 2:
+            genus = name_parts[0].capitalize()
+            species = name_parts[1].lower()
+            base_name = f"{genus}_{species}"
+            return re.sub(r'[^\w-]', '', base_name) 
+        elif len(name_parts) == 1:
+            base_name = name_parts[0].capitalize()
+            return re.sub(r'[^\w-]', '', base_name)
+        else:
+            return "unknown_species_id"
+
     def create_wallace_weber_lines(self):
-        # ... (kode tetap sama) ...
-        """Create Wallace and Weber lines from coordinates"""
+
         wallace_coords = [
-            (114.770503, -11.054354),
-            (115.880123, -8.390789),
-            (116.517330, -6.298842),  # Selat Lombok
-            (119.329829, 0.510935),  # Selat Makassar
-            (119.505611, 1.576416),   # Sulawesi
-            (119.989009, 2.334026 ),   # Laut Sulawesi
-            (123.481628, 4.309107),    # Timur Filipina
-            (128.230147, 5.248134 )
+                (114.770503, -11.054354),
+                (115.880123, -8.390789),
+                (116.517330, -6.298842),  # Selat Lombok
+                (119.329829, 0.510935),  # Selat Makassar
+                (119.505611, 1.576416),   # Sulawesi
+                (119.989009, 2.334026 ),   # Laut Sulawesi
+                (123.481628, 4.309107),    # Timur Filipina
+                (128.230147, 5.248134 )
         ]
 
         # Koordinat perkiraan untuk Garis Weber
@@ -45,37 +71,47 @@ class BiogeographicAnalyzer:
             (123.281731, -11.482735)
         ]
         self.wallace_line = gpd.GeoDataFrame(
-            {"name": ["Wallace Line"]}, geometry=[LineString(wallace_coords)], crs="EPSG:4326",
+            {"name": ["Wallace Line (Detailed)"]}, geometry=[LineString(wallace_coords)], crs="EPSG:4326",
         )
         self.weber_line = gpd.GeoDataFrame(
-            {"name": ["Weber Line"]}, geometry=[LineString(weber_coords)], crs="EPSG:4326",
+            {"name": ["Weber Line (Detailed)"]}, geometry=[LineString(weber_coords)], crs="EPSG:4326",
         )
 
     def classify_biogeographic_zones(self, species_gdf):
         # ... (kode tetap sama) ...
-        """Classify species points into Western, Central, Eastern zones"""
         def get_zone(point_geom):
             if hasattr(point_geom, "x"): longitude = point_geom.x
-            else: longitude = point_geom.centroid.x
-            if longitude < 119: return "Western"
-            elif longitude < 129: return "Central"
-            else: return "Eastern"
+            else: longitude = point_geom.centroid.x 
+            if longitude < 119: return "Western (Asian)" 
+            elif longitude < 129: return "Central (Wallacea)"
+            else: return "Eastern (Australasian)"
         species_gdf["biogeographic_zone"] = species_gdf["geometry"].apply(get_zone)
         return species_gdf
 
-    def _generate_phylo_image_path(self, scientific_name):
-        # ... (kode tetap sama) ...
-        if pd.isna(scientific_name) or scientific_name == "": return ""
-        # Membersihkan nama ilmiah untuk nama file, termasuk menghapus penulis dan tahun jika ada
-        name_parts = scientific_name.split()
-        cleaned_name_for_file = f"{name_parts[0]}_{name_parts[1]}" if len(name_parts) >= 2 else scientific_name.replace(' ', '_')
-        sanitized_name = re.sub(r'[^\w-]', '', cleaned_name_for_file) # Hanya izinkan alphanumeric, underscore, hyphen
-        image_filename = f"{sanitized_name}_phylo.png"
+    def _generate_phylo_image_path(self, scientific_name_original):
+        """
+        Menghasilkan path ke file gambar filogenetik berdasarkan nama ilmiah yang distandarisasi.
+        Logika ini HARUS SAMA dengan cara nama file dibuat di phylogenetic_analysis.py.
+        """
+        if pd.isna(scientific_name_original) or not str(scientific_name_original).strip():
+            # Jika nama asli tidak valid, kembalikan path ke gambar placeholder atau nama default
+            # agar tidak error saat mencoba menampilkan gambar yang tidak ada.
+            # Untuk konsistensi, kita bisa menggunakan hasil standarisasi "unknown_species_id"
+            base_name = self._standardize_species_name_for_phylo_file(scientific_name_original) 
+        else:
+            base_name = self._standardize_species_name_for_phylo_file(scientific_name_original)
+        
+        if not base_name or base_name == "unknown_species_id": # Jika standarisasi menghasilkan default error
+            # print(f"Peringatan: Nama tidak valid untuk path gambar filogenetik: {scientific_name_original}")
+            # Anda bisa memilih untuk tidak menampilkan tombol sama sekali jika nama tidak valid
+            return "" # Kembalikan string kosong agar tombol tidak dibuat jika nama tidak valid
+
+        image_filename = f"{base_name}_phylo.png"
         return f"phylo_trees/{image_filename}"
 
 
     def _create_species_popup(self, species):
-        # ... (kode tetap sama) ...
+        # ... (kode tetap sama, _generate_phylo_image_path akan menggunakan logika baru) ...
         scientific_name = species.get('scientificName', 'Unknown')
         popup_html_parts = [
             f'<div style="width: 350px;">',
@@ -93,8 +129,8 @@ class BiogeographicAnalyzer:
             f"<tr><td><b>Data Source:</b></td><td>{species.get('datasetName', 'N/A')}</td></tr>",
             '</table>'
         ]
-        phylo_image_path = self._generate_phylo_image_path(scientific_name)
-        if scientific_name != 'Unknown' and phylo_image_path:
+        phylo_image_path = self._generate_phylo_image_path(scientific_name) # Menggunakan fungsi yang diperbarui
+        if scientific_name != 'Unknown' and phylo_image_path: # Pastikan phylo_image_path tidak kosong
             js_safe_scientific_name = scientific_name.replace("'", "\\'")
             popup_html_parts.append('<hr style="margin-top:10px; margin-bottom:10px;">')
             popup_html_parts.append(
@@ -106,9 +142,10 @@ class BiogeographicAnalyzer:
         popup_html_parts.append('</div>')
         return "\n".join(popup_html_parts)
 
-
+    # ... (sisa fungsi _format_iucn_status, _add_modal_html_css_js, _add_pulsing_dot_css, _add_national_parks_layer, dll. tetap sama) ...
+    # Saya hanya akan menyalin fungsi yang tidak berubah jika ini adalah pembaruan dari versi yang ada di Canvas.
+    # (Menyalin fungsi yang tidak berubah dari versi sebelumnya di Canvas)
     def _format_iucn_status(self, status):
-        # ... (kode tetap sama) ...
         if pd.isna(status) or status == "": return "Not Assessed"
         status_colors = {
             "CR": '<span style="color: #d73027; font-weight: bold;">Critically Endangered</span>',
@@ -122,7 +159,6 @@ class BiogeographicAnalyzer:
         return status_colors.get(status, status)
 
     def _add_modal_html_css_js(self):
-        # ... (kode modal tetap sama) ...
         modal_html = """
         <div id="phyloModal" class="phylo-modal">
             <div class="phylo-modal-content">
@@ -183,56 +219,17 @@ class BiogeographicAnalyzer:
         self.map.get_root().html.add_child(folium.Element(modal_js))
 
     def _add_pulsing_dot_css(self):
-        """Menambahkan CSS untuk efek berdenyut pada penanda Taman Nasional."""
         pulsing_dot_css = """
         <style>
-            .pulsing-dot-container {
-                /* Container tidak memerlukan style khusus jika icon_size di DivIcon sudah diatur */
-            }
-            .pulsing-dot {
-                width: 24px; /* Ukuran titik utama - 2x lebih besar */
-                height: 24px; /* Ukuran titik utama - 2x lebih besar */
-                background-color: #28a745; /* Warna hijau yang lebih cerah */
-                border-radius: 50%;
-                border: 3px solid white; /* Border putih agar lebih menonjol, sedikit lebih tebal */
-                box-shadow: 0 0 5px rgba(0,0,0,0.6); /* Shadow lebih jelas */
-                position: relative; /* Untuk pseudo-element */
-            }
-            .pulsing-dot::before {
-                content: '';
-                position: absolute;
-                display: block;
-                width: 200%; /* Ukuran pulse relatif terhadap dot, tetap 200% dari ukuran baru */
-                height: 200%;
-                top: -50%; /* Pusatkan pulse */
-                left: -50%;
-                background-color: #28a745;
-                border-radius: 50%;
-                opacity: 0.7;
-                animation: pulse-animation 2s infinite;
-                z-index: -1; /* Taruh di belakang dot utama */
-            }
-
-            @keyframes pulse-animation {
-                0% {
-                    transform: scale(0.5); /* Mulai dari setengah ukuran pulse */
-                    opacity: 0.7;
-                }
-                50% {
-                    opacity: 0.2;
-                }
-                100% {
-                    transform: scale(1.5); /* Membesar hingga 1.5x ukuran pulse */
-                    opacity: 0;
-                }
-            }
+            .pulsing-dot-container {}
+            .pulsing-dot { width: 24px; height: 24px; background-color: #28a745; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.6); position: relative; }
+            .pulsing-dot::before { content: ''; position: absolute; display: block; width: 200%; height: 200%; top: -50%; left: -50%; background-color: #28a745; border-radius: 50%; opacity: 0.7; animation: pulse-animation 2s infinite; z-index: -1; }
+            @keyframes pulse-animation { 0% { transform: scale(0.5); opacity: 0.7; } 50% { opacity: 0.2; } 100% { transform: scale(1.5); opacity: 0; } }
         </style>
         """
         self.map.get_root().html.add_child(folium.Element(pulsing_dot_css))
 
-
     def _add_national_parks_layer(self, national_parks_data_path):
-        """Menambahkan lapisan Taman Nasional ke peta dengan efek berdenyut."""
         try:
             with open(national_parks_data_path, 'r', encoding='utf-8') as f:
                 parks_data = json.load(f)
@@ -245,41 +242,26 @@ class BiogeographicAnalyzer:
         except Exception as e:
             print(f"Error memuat data taman nasional: {e}")
             return
-
         if not parks_data:
             print("Tidak ada data taman nasional untuk ditampilkan.")
             return
-
         parks_fg = folium.FeatureGroup(name="Taman Nasional (Titik Berdenyut)", show=True)
-
         for park in parks_data:
             name = park.get("name", "Nama Tidak Diketahui")
             lat = park.get("latitude")
             lon = park.get("longitude")
             size = park.get("size", 0) 
-
             if lat is None or lon is None:
                 print(f"Data koordinat tidak lengkap untuk taman: {name}, dilewati.")
                 continue
-            
             tooltip_text = f"<b>{name}</b><br>Luas: {size:,.2f} km²"
-            
             icon_html = '<div class="pulsing-dot"></div>'
-            
             folium.Marker(
-                location=[lat, lon],
-                tooltip=tooltip_text,
-                popup=tooltip_text,
-                icon=folium.DivIcon(
-                    html=icon_html,
-                    icon_size=(24,24), # Sesuaikan dengan ukuran .pulsing-dot baru (24px)
-                    icon_anchor=(12,12) # Setengah dari icon_size baru untuk pusatkan
-                )
+                location=[lat, lon], tooltip=tooltip_text, popup=tooltip_text,
+                icon=folium.DivIcon(html=icon_html, icon_size=(24,24), icon_anchor=(12,12))
             ).add_to(parks_fg)
-        
         parks_fg.add_to(self.map)
-        print(f"Lapisan Taman Nasional ditambahkan dengan {len(parks_data)} taman.")
-
+        print(f"Lapisan Taman Nasional ditambahkan dengan {len(parks_data)} taman (efek berdenyut).")
 
     def create_biodiversity_map(
         self, species_gdf, title="BioNusantara: Indonesian Biodiversity Map"
@@ -288,23 +270,18 @@ class BiogeographicAnalyzer:
         self.map = folium.Map(
             location=indonesia_center, zoom_start=5, tiles="OpenStreetMap", control_scale=True,
         )
-
         title_html = f"""<h3 align="center" style="font-size:20px; color:darkgreen; margin-top:10px; margin-bottom:5px;"><b>{title}</b></h3>"""
         self.map.get_root().html.add_child(folium.Element(title_html))
-
         self._add_biogeographic_lines()
         self._add_species_points(species_gdf)
-        
         script_dir = os.path.dirname(os.path.abspath(__file__)) if '__file__' in locals() else os.getcwd()
         national_parks_file = os.path.join(script_dir, "..", "data", "processed", "national_parks.json")
         self._add_national_parks_layer(national_parks_file)
-
         self._add_species_heatmap(species_gdf)
         self._add_biodiversity_statistics(species_gdf)
         self._add_taxonomic_group_layers(species_gdf)
         self._add_modal_html_css_js()
         self._add_pulsing_dot_css() 
-        
         folium.LayerControl(collapsed=False).add_to(self.map)
         self._add_custom_legend()
         return self.map
@@ -312,19 +289,19 @@ class BiogeographicAnalyzer:
     def _add_biogeographic_lines(self):
         if self.wallace_line is not None:
             folium.GeoJson(
-                self.wallace_line.__geo_interface__,
+                self.wallace_line, 
                 style_function=lambda feature: {"color": "red", "weight": 4, "opacity": 0.8, "dashArray": "10, 5"},
                 tooltip=folium.Tooltip("Wallace Line - Separates Asian and Transitional fauna"),
                 popup=folium.Popup("<b>Wallace Line</b><br>Biogeographic boundary separating Asian fauna from Australasian species", max_width=300),
-                name="Wallace Line"
+                name="Wallace Line (Detailed)" 
             ).add_to(self.map)
         if self.weber_line is not None:
             folium.GeoJson(
-                self.weber_line.__geo_interface__,
+                self.weber_line, 
                 style_function=lambda feature: {"color": "blue", "weight": 4, "opacity": 0.8, "dashArray": "10, 5"},
                 tooltip=folium.Tooltip("Weber Line - Separates Transitional and Australasian fauna"),
                 popup=folium.Popup("<b>Weber Line</b><br>Biogeographic boundary separating Transitional fauna from Australasian species", max_width=300),
-                name="Weber Line"
+                name="Weber Line (Detailed)" 
             ).add_to(self.map)
 
     def _add_species_points(self, species_gdf):
@@ -388,7 +365,6 @@ class BiogeographicAnalyzer:
             feature_group.add_to(self.map)
 
     def _add_custom_legend(self):
-        # Perbarui representasi Taman Nasional di legenda
         legend_html = """<div style="position: fixed; bottom: 20px; left: 10px; width: 220px; background-color: rgba(255,255,255,0.9); border:1px solid #bbb; z-index:9998; font-size:11px; padding: 10px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
             <h4 style="margin-top: 0; margin-bottom:8px; color: darkgreen; font-size: 13px; border-bottom: 1px solid #eee; padding-bottom: 4px;">🗺️ Map Legend</h4>
             <div style="margin-bottom: 6px;"><b>Biogeographic Lines:</b><br><svg width="20" height="10" style="vertical-align: middle;"><line x1="0" y1="5" x2="20" y2="5" style="stroke:red; stroke-width:3; stroke-dasharray:4,2;"/></svg> Wallace Line<br><svg width="20" height="10" style="vertical-align: middle;"><line x1="0" y1="5" x2="20" y2="5" style="stroke:blue; stroke-width:3; stroke-dasharray:4,2;"/></svg> Weber Line</div>
@@ -399,7 +375,6 @@ class BiogeographicAnalyzer:
     
     def _add_search_functionality(self, species_gdf_for_search):
         pass
-
 
     def save_map(self, filename="bionusantara_map.html"):
         if self.map:
@@ -413,17 +388,14 @@ class BiogeographicAnalyzer:
         if self.map: return self.map
         else: print("No map to display. Create map first using create_biodiversity_map()")
 
-
 if __name__ == "__main__":
     analyzer = BiogeographicAnalyzer()
-    analyzer.create_wallace_weber_lines()
+    analyzer.create_wallace_weber_lines() 
     script_dir = os.path.dirname(__file__) if '__file__' in locals() else os.getcwd()
     species_data_path = os.path.join(script_dir, "../data/processed/cleaned_species_data.geojson")
     output_map_path = os.path.join(script_dir, "../output/bionusantara_biodiversity_map.html")
-    
     phylo_tree_dir = os.path.join(script_dir, "../output/phylo_trees")
     if not os.path.exists(phylo_tree_dir): os.makedirs(phylo_tree_dir)
-
     national_parks_json_path = os.path.join(script_dir, "../data/processed/national_parks.json")
     if not os.path.exists(national_parks_json_path):
         print(f"Membuat file dummy {national_parks_json_path} untuk pengujian...")
@@ -434,10 +406,8 @@ if __name__ == "__main__":
         ]
         processed_dir = os.path.dirname(national_parks_json_path)
         if not os.path.exists(processed_dir): os.makedirs(processed_dir)
-        with open(national_parks_json_path, 'w', encoding='utf-8') as f_np: # Tambahkan encoding
+        with open(national_parks_json_path, 'w', encoding='utf-8') as f_np:
             json.dump(dummy_parks_data, f_np, indent=4, ensure_ascii=False)
-
-
     try:
         species_gdf = gpd.read_file(species_data_path)
         print(f"Loaded {len(species_gdf)} species records from {species_data_path}")
