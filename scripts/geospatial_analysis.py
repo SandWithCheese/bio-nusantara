@@ -18,9 +18,32 @@ class BiogeographicAnalyzer:
         # ... (kode tetap sama) ...
         """Create Wallace and Weber lines from coordinates"""
         wallace_coords = [
-            (117.0, -8.5), (119.0, -2.0), (127.0, 2.0),
+            (114.770503, -11.054354),
+            (115.880123, -8.390789),
+            (116.517330, -6.298842),  # Selat Lombok
+            (119.329829, 0.510935),  # Selat Makassar
+            (119.505611, 1.576416),   # Sulawesi
+            (119.989009, 2.334026 ),   # Laut Sulawesi
+            (123.481628, 4.309107),    # Timur Filipina
+            (128.230147, 5.248134 )
         ]
-        weber_coords = [(129.0, -8.0), (130.0, -2.0), (132.0, 2.0)]
+
+        # Koordinat perkiraan untuk Garis Weber
+        weber_coords = [
+            (131.651688, 3.938487),
+            (127.974819, 3.127062),
+            (126.201054, 1.317781),
+            (126.127147  , -0.418912),
+            (126.810786, -1.675094),
+            (126.496681, -2.727476),
+            (125.406554, -3.151880),
+            (125.498938, -4.110730),
+            (128.178063, -5.804167),
+            (130.450701, -7.089332),
+            (130.284410, -8.407480),
+            (126.755355, -9.520776),
+            (123.281731, -11.482735)
+        ]
         self.wallace_line = gpd.GeoDataFrame(
             {"name": ["Wallace Line"]}, geometry=[LineString(wallace_coords)], crs="EPSG:4326",
         )
@@ -233,13 +256,13 @@ class BiogeographicAnalyzer:
             name = park.get("name", "Nama Tidak Diketahui")
             lat = park.get("latitude")
             lon = park.get("longitude")
-            size_sqkm = park.get("size_sqkm", 0) 
+            size = park.get("size", 0) 
 
             if lat is None or lon is None:
                 print(f"Data koordinat tidak lengkap untuk taman: {name}, dilewati.")
                 continue
             
-            tooltip_text = f"<b>{name}</b><br>Luas: {size_sqkm:,.2f} km²"
+            tooltip_text = f"<b>{name}</b><br>Luas: {size:,.2f} km²"
             
             icon_html = '<div class="pulsing-dot"></div>'
             
@@ -405,9 +428,9 @@ if __name__ == "__main__":
     if not os.path.exists(national_parks_json_path):
         print(f"Membuat file dummy {national_parks_json_path} untuk pengujian...")
         dummy_parks_data = [
-            {"name": "Taman Nasional Bali Barat", "latitude": -8.1333, "longitude": 114.4833, "size_sqkm": 190},
-            {"name": "Taman Nasional Gunung Rinjani", "latitude": -8.40806, "longitude": 116.44944, "size_sqkm": 413.3},
-            {"name": "Taman Nasional Komodo", "latitude": -8.5513, "longitude": 119.4832, "size_sqkm": 1733}
+            {"name": "Taman Nasional Bali Barat", "latitude": -8.1333, "longitude": 114.4833, "size": 190},
+            {"name": "Taman Nasional Gunung Rinjani", "latitude": -8.40806, "longitude": 116.44944, "size": 413.3},
+            {"name": "Taman Nasional Komodo", "latitude": -8.5513, "longitude": 119.4832, "size": 1733}
         ]
         processed_dir = os.path.dirname(national_parks_json_path)
         if not os.path.exists(processed_dir): os.makedirs(processed_dir)
