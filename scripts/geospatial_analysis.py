@@ -16,8 +16,7 @@ class BiogeographicAnalyzer:
 
     def _standardize_species_name_for_phylo_file(self, original_name):
         """
-        Membersihkan dan menstandarisasi nama spesies menjadi format Genus_spesies.
-        Logika ini HARUS SAMA dengan standardize_species_name_for_id di phylogenetic_analysis.py
+        Convert nama spesies menjadi format "Genus_spesies".
         """
         if pd.isna(original_name) or not str(original_name).strip():
             return "unknown_species_id" 
@@ -42,19 +41,19 @@ class BiogeographicAnalyzer:
             return "unknown_species_id"
 
     def create_wallace_weber_lines(self):
-
+        # Plot wallace
         wallace_coords = [
                 (114.770503, -11.054354),
                 (115.880123, -8.390789),
-                (116.517330, -6.298842),  # Selat Lombok
-                (119.329829, 0.510935),  # Selat Makassar
-                (119.505611, 1.576416),   # Sulawesi
-                (119.989009, 2.334026 ),   # Laut Sulawesi
-                (123.481628, 4.309107),    # Timur Filipina
+                (116.517330, -6.298842),  
+                (119.329829, 0.510935),  
+                (119.505611, 1.576416),   
+                (119.989009, 2.334026 ),  
+                (123.481628, 4.309107),   
                 (128.230147, 5.248134 )
         ]
 
-        # Koordinat perkiraan untuk Garis Weber
+        # Plot weber
         weber_coords = [
             (131.651688, 3.938487),
             (127.974819, 3.127062),
@@ -78,7 +77,6 @@ class BiogeographicAnalyzer:
         )
 
     def classify_biogeographic_zones(self, species_gdf):
-        # ... (kode tetap sama) ...
         def get_zone(point_geom):
             if hasattr(point_geom, "x"): longitude = point_geom.x
             else: longitude = point_geom.centroid.x 
@@ -90,28 +88,24 @@ class BiogeographicAnalyzer:
 
     def _generate_phylo_image_path(self, scientific_name_original):
         """
-        Menghasilkan path ke file gambar filogenetik berdasarkan nama ilmiah yang distandarisasi.
-        Logika ini HARUS SAMA dengan cara nama file dibuat di phylogenetic_analysis.py.
+        Menghasilkan path ke file gambar filogenetik berdasarkan nama ilmiah .
         """
         if pd.isna(scientific_name_original) or not str(scientific_name_original).strip():
-            # Jika nama asli tidak valid, kembalikan path ke gambar placeholder atau nama default
-            # agar tidak error saat mencoba menampilkan gambar yang tidak ada.
-            # Untuk konsistensi, kita bisa menggunakan hasil standarisasi "unknown_species_id"
             base_name = self._standardize_species_name_for_phylo_file(scientific_name_original) 
         else:
             base_name = self._standardize_species_name_for_phylo_file(scientific_name_original)
         
-        if not base_name or base_name == "unknown_species_id": # Jika standarisasi menghasilkan default error
-            # print(f"Peringatan: Nama tidak valid untuk path gambar filogenetik: {scientific_name_original}")
-            # Anda bisa memilih untuk tidak menampilkan tombol sama sekali jika nama tidak valid
-            return "" # Kembalikan string kosong agar tombol tidak dibuat jika nama tidak valid
+        if not base_name or base_name == "unknown_species_id": 
+            return "" 
 
         image_filename = f"{base_name}_phylo.png"
         return f"phylo_trees/{image_filename}"
 
 
     def _create_species_popup(self, species):
-        # ... (kode tetap sama, _generate_phylo_image_path akan menggunakan logika baru) ...
+        """
+        Modal Informasi Spesies
+        """
         scientific_name = species.get('scientificName', 'Unknown')
         popup_html_parts = [
             f'<div style="width: 350px;">',
@@ -129,8 +123,8 @@ class BiogeographicAnalyzer:
             f"<tr><td><b>Data Source:</b></td><td>{species.get('datasetName', 'N/A')}</td></tr>",
             '</table>'
         ]
-        phylo_image_path = self._generate_phylo_image_path(scientific_name) # Menggunakan fungsi yang diperbarui
-        if scientific_name != 'Unknown' and phylo_image_path: # Pastikan phylo_image_path tidak kosong
+        phylo_image_path = self._generate_phylo_image_path(scientific_name) 
+        if scientific_name != 'Unknown' and phylo_image_path: 
             js_safe_scientific_name = scientific_name.replace("'", "\\'")
             popup_html_parts.append('<hr style="margin-top:10px; margin-bottom:10px;">')
             popup_html_parts.append(
@@ -142,9 +136,6 @@ class BiogeographicAnalyzer:
         popup_html_parts.append('</div>')
         return "\n".join(popup_html_parts)
 
-    # ... (sisa fungsi _format_iucn_status, _add_modal_html_css_js, _add_pulsing_dot_css, _add_national_parks_layer, dll. tetap sama) ...
-    # Saya hanya akan menyalin fungsi yang tidak berubah jika ini adalah pembaruan dari versi yang ada di Canvas.
-    # (Menyalin fungsi yang tidak berubah dari versi sebelumnya di Canvas)
     def _format_iucn_status(self, status):
         if pd.isna(status) or status == "": return "Not Assessed"
         status_colors = {
@@ -418,11 +409,11 @@ if __name__ == "__main__":
             classified_species, title="BioNusantara: Indonesian Biodiversity Explorer"
         )
         analyzer.save_map(output_map_path)
-        print("✅ Biodiversity map created successfully!")
-        print(f"📁 Saved as '{output_map_path}'")
+        print("\033[92mBiodiversity map created successfully!\033[0m")
+        print(f"\033[93mSaved in '{output_map_path}'\033[0m")
     except FileNotFoundError:
-        print(f"❌ Species data file not found at: {species_data_path}")
+        print("\033[91mSpecies data file not found at: {species_data_path}\033[0m")
     except Exception as e:
         import traceback
-        print(f"❌ An error occurred while creating the map: {e}")
+        print(f"\033[91mAn error occurred while creating the map: {e}\033[0m")
         print(traceback.format_exc())
