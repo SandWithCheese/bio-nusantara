@@ -52,7 +52,7 @@ bionusantara/
 
 1. Clone repositori:
    ```bash
-   git clone https://github.com/shafiqIrv/kds .
+   git clone https://github.com/SandWithCheese/bio-nusantara .
    ```
 
 2. Buat dan aktifkan lingkungan virtual:
