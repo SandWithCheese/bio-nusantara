@@ -136,13 +136,8 @@ Skrip ini:
 - Menghasilkan gambar pohon filogenetik individu untuk setiap spesies
 - Menyimpan gambar pohon ke `output/phylo_trees/`
 
-## Catatan
 
-- Proses pengambilan sekuens bisa memakan waktu lama. Skrip menyimpan kemajuan ke file JSON, sehingga dapat diinterupsi dan dilanjutkan.
-- NCBI memberlakukan batas rate pada permintaan API, sehingga pengambilan mungkin lambat.
-- Untuk dataset besar, pertimbangkan untuk memproses subset spesies.
-
-## Alur Kerja Proyek
+## Flow App
 
 ```mermaid
 graph TD
